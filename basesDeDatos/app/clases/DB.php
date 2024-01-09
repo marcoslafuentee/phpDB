@@ -1,7 +1,10 @@
 <?php
 
 namespace utilidades;
+use Dotenv\Dotenv;
 
+$dotenv = Dotenv::createImmutable("./../");
+$dotenv->safeLoad();
 class DB
 {
     private \mysqli $con;
@@ -79,7 +82,7 @@ class DB
 
         $rtdo = $this->con->query($sentencia);
 
-        while ($rtdo->fe)
+        while ($fila=$rtdo->fetch_row())
 
         return $rtdo->fetch_all();
 

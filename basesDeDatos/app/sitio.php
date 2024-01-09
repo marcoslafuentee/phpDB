@@ -15,6 +15,16 @@ $db = new DB();
 
 $familias = $db->obtener_familias();
 
+
+
+
+$valor = $_POST['submit'] ??"";
+
+if ($valor = "mostrarProductos"){
+
+
+}
+
 ?>
 
 <!doctype html>
@@ -30,7 +40,15 @@ $familias = $db->obtener_familias();
 <h1>Bienvenido <?=$user?></h1>
 
 <form method="post" action="sitio.php" name="seleccion">
-    <input type="checkbox">
+    <select name="familia" id="">
+        <?php
+            foreach ($familias as $familia){
+                echo "<option name='$familia[0]'>$familia[1]</option>";
+            }
+
+        ?>
+    </select>
+    <input type="submit" name="mostrarProductos" value="Mostrar productos">
 </form>
 
 </body>
