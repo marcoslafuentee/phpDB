@@ -87,4 +87,55 @@ class DB
         return $rtdo->fetch_all();
 
     }
+
+    public function obtener_producto(string $codigo_familia):array {
+        $sentencia =<<<FIN
+            select cod, nombre_corto, PVP
+            from producto
+            where familia = ?
+FIN;
+
+        $productos =[];
+        try {
+            $stmt= $this->con->stmt_init();
+            $stmt->prepare($sentencia);
+            $stmt->bind_param("s", $codigo_familia);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($cod,$nom,  $pvp);
+            while ($stmt->fetch()) {
+                $productos[] = ["cod" => $cod, "nombre" => $nom, "PVP" => $pvp];
+            }
+
+        } catch (\mysqli_sql_exception $e){
+            $msj = $e->getMessage();
+            error_log($msj, 1, "errores.log");
+
+        } finally {
+            return $productos;
+        }
+    }
+
+
+
+    public function modificar_producto($nombre, $precio, $codigo):bool{
+        $sentencia =<<<FIN
+            update producto 
+            set nombre_corto = ? and PVP = ?
+            where producto.cod = ?
+FIN;
+        try {
+            $stmt = $this->con->stmt_init();
+            $stmt->prepare($sentencia);
+            $stmt->bind_param("sds", $nombre, $precio, $codigo);
+            $stmt->execute();
+
+
+
+        } catch (\mysqli_sql_exception $e){
+            $msj = $e->getMessage();
+            error_log($msj, 1, "errores.log");
+            return false;
+        }
+    }
 }

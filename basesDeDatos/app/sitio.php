@@ -15,15 +15,17 @@ $db = new DB();
 
 $familias = $db->obtener_familias();
 
+$opcion = $_POST['submit'] ??"";
 
-
-
-$valor = $_POST['submit'] ??"";
-
-if ($valor = "mostrarProductos"){
-
-
-}
+var_dump($_POST);
+ switch ($opcion){
+     case "Mostrar productos":
+         $cod_familia = $_POST['familia'];
+         $productos = $db->obtener_producto($cod_familia);
+         var_dump($productos);
+         break;
+     default:
+ }
 
 ?>
 
@@ -43,13 +45,43 @@ if ($valor = "mostrarProductos"){
     <select name="familia" id="">
         <?php
             foreach ($familias as $familia){
-                echo "<option name='$familia[0]'>$familia[1]</option>";
+                $cod = $familia[0];
+                $nombre =$familia[1];
+                $checked= "";
+                if ($cod == $cod_familia){
+                    $checked="selected";
+                }
+
+                echo "<option $checked value='$cod'>$nombre</option>";
             }
 
         ?>
     </select>
-    <input type="submit" name="mostrarProductos" value="Mostrar productos">
+    <input type="submit" name="submit" value="Mostrar productos">
 </form>
+<?php if (isset($productos)): ?>
+<table>
+    <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+    </tr>
+    <?php
+        foreach ($productos as $producto){
+            echo <<<FIN
+                <tr>
+                <td>{$producto['nombre']}</td>
+                <td>{$producto['PVP']}</td>
+                <td><form action="producto.php">
+                    <input type="submit" value="Editar" name="submit">
+                    <input type="hidden" name="familia" value="{$producto['cod']}">
+                    <input type="hidden" name="familia" value="$cod_familia">
+                </form></td>
+                </tr>
+FIN;
+        }
+    ?>
+</table>
+<?php endif ?>
 
 </body>
 </html>
